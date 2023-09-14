@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
-
+import pickle
 st.title('IPL Dashboard')
 
-st.sidebar.title('Details of IPL players')
 
 
 def load_player_details(player):
@@ -313,7 +312,6 @@ class Batsman(Exception):
 
 # START HERE ###
 
-option = st.sidebar.selectbox('select one', ['Batsman', 'Bowler'])
 
 df = pd.read_csv('IPL_ball_by_ball_updated.csv.zip')
 df.replace({'Arun Jaitley Stadium': 'Arun Jaitley Stadium, Delhi',
@@ -365,44 +363,110 @@ df['wickets'] = df['wicket_type'].isin(wicket_types).astype(int)
 # Calculate 'runs_for_eco' using vectorized addition
 df['runs_for_eco'] = df['runs_off_bat'] + df['new_extras']
 
-if option == 'Batsman':
-    selected_batsman = st.sidebar.selectbox('Select Batsman', sorted(df['striker'].unique().tolist()))
-    btn1 = st.sidebar.button('Find Details')
-    batsman_obj = Batsman(selected_batsman)
-    if "btn1_state" not in st.session_state:
-        st.session_state.btn1_state = False
+# Sidebar
+st.sidebar.title('Select One Option')
+select = st.sidebar.selectbox('Statistics & Insights/Win Prediction', ['Win Prediction', 'Statistics & Insights'])
+if select == 'Statistics & Insights':
+    option = st.sidebar.selectbox('Batsman/Bowler', ['Batsman', 'Bowler'])
 
-    if btn1 or st.session_state.btn1_state:
-        st.session_state.btn1_state = True
-        load_player_details(selected_batsman)
-        batsman_obj.batsman_details()
+    if option == 'Batsman':
+        selected_batsman = st.sidebar.selectbox('Select Batsman', sorted(df['striker'].unique().tolist()))
+        btn1 = st.sidebar.button('Find Details')
+        batsman_obj = Batsman(selected_batsman)
+        if "btn1_state" not in st.session_state:
+            st.session_state.btn1_state = False
 
-        st.write('Wants to know some valuable records!!')
-        btn3_placeholder = st.empty()
-        btn3 = btn3_placeholder.button("Show Information")
+        if btn1 or st.session_state.btn1_state:
+            st.session_state.btn1_state = True
+            load_player_details(selected_batsman)
+            batsman_obj.batsman_details()
 
-        if btn3:
-            imp_info_of_batsman(batsman_obj.player)
-        #   Remove the button by replacing it with an empty placeholder
-            btn3_placeholder.empty()
+            st.write('Wants to know some valuable records!!')
+            btn3_placeholder = st.empty()
+            btn3 = btn3_placeholder.button("Show Information")
 
+            if btn3:
+                imp_info_of_batsman(batsman_obj.player)
+            #   Remove the button by replacing it with an empty placeholder
+                btn3_placeholder.empty()
+
+
+    else:
+        selected_bowler = st.sidebar.selectbox('Select Bowler', sorted(df['bowler'].unique().tolist()))
+        btn2 = st.sidebar.button('Find Details')
+        bowler_obj = Bowler(selected_bowler)
+        if "btn2_state" not in st.session_state:
+            st.session_state.btn2_state = False
+        if btn2 or st.session_state.btn2_state:
+            st.session_state.btn2_state = True
+            load_player_details(selected_bowler)
+            bowler_obj.bowler_details()
+
+            st.write('Wants to know some valuable records!!')
+            btn4_placeholder = st.empty()
+            btn4 = btn4_placeholder.button("Show Information")
+            if btn4:
+                imp_info_of_bowler(bowler_obj.player)
+                btn4_placeholder.empty()
 
 else:
-    selected_bowler = st.sidebar.selectbox('Select Bowler', sorted(df['bowler'].unique().tolist()))
-    btn2 = st.sidebar.button('Find Details')
-    bowler_obj = Bowler(selected_bowler)
-    if "btn2_state" not in st.session_state:
-        st.session_state.btn2_state = False
-    if btn2 or st.session_state.btn2_state:
-        st.session_state.btn2_state = True
-        load_player_details(selected_bowler)
-        bowler_obj.bowler_details()
+    with open('pipeline (2).pkl', 'rb') as file:
+        loaded_pipeline = pickle.load(file)
+    col1, col2, col3 = st.columns(3)
+    batting_team = ['Kolkata Knight Riders', 'Sunrisers Hyderabad',
+       'Chennai Super Kings', 'Delhi Capitals', 'Mumbai Indians',
+       'Gujarat Titans', 'Royal Challengers Bangalore',
+       'Rajasthan Royals', 'Lucknow Super Giants', 'Punjab Kings']
+    bowling_team = ['Kolkata Knight Riders', 'Sunrisers Hyderabad',
+       'Chennai Super Kings', 'Delhi Capitals', 'Mumbai Indians',
+       'Gujarat Titans', 'Royal Challengers Bangalore',
+       'Rajasthan Royals', 'Lucknow Super Giants', 'Punjab Kings']
+    venues = ['Eden Gardens, Kolkata', 'Sharjah Cricket Stadium',
+       'Wankhede Stadium, Mumbai', 'Kingsmead',
+       'MA Chidambaram Stadium, Chepauk, Chennai',
+       'Rajiv Gandhi International Stadium, Uppal, Hyderabad',
+       'Sawai Mansingh Stadium, Jaipur',
+       'Dubai International Cricket Stadium',
+       'Arun Jaitley Stadium, Delhi', 'M.Chinnaswamy Stadium, Bengaluru',
+       'Sheikh Zayed Stadium',
+       'Maharashtra Cricket Association Stadium, Pune',
+       'Dr DY Patil Sports Academy, Mumbai', "St George's Park",
+       'The Wanderers Stadium, Johannesburg', 'Brabourne Stadium, Mumbai',
+       'Dr DY Patil Sports Academy, Navi Mumbai',
+       'JSCA International Stadium Complex', 'Newlands',
+       'Narendra Modi Stadium, Motera, Ahmedabad',
+       'Punjab Cricket Association IS Bindra Stadium, Mohali, Chandigarh',
+       'SuperSport Park', 'Zayed Cricket Stadium, Abu Dhabi',
+       'Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium, Lucknow',
+       'Barsapara Cricket Stadium, Guwahati',
+       'Himachal Pradesh Cricket Association Stadium, Dharamsala',
+       'Barabati Stadium', 'Buffalo Park',
+       'Dr. Y.S. Rajasekhara Reddy ACA-VDCA Cricket Stadium',
+       'De Beers Diamond Oval']
 
-        st.write('Wants to know some valuable records!!')
-        btn4_placeholder = st.empty()
-        btn4 = btn4_placeholder.button("Show Information")
-        if btn4:
-            imp_info_of_bowler(bowler_obj.player)
-            btn4_placeholder.empty()
+    with col1:
+        selected_batting_team = st.selectbox('Select Batting Team', batting_team)
+        st.write('')
+        selected_bowling_team = st.selectbox('Select Bowling Team', bowling_team)
+        st.write(' ')
+        selected_venue = st.selectbox('Select Venue', venues)
+    with col2:
+        target = st.number_input('Target', value=110)
+        st.write(' ')
+        runs_left = st.number_input('Runs Left', min_value=1, max_value=300, value=50, step=1)
+    with col3:
+        balls_left = st.number_input('Balls Left', min_value=1, max_value=120, value=50, step=1)
+        st.write(' ')
+        wickets_left = st.number_input('Wickets Left', min_value=0, max_value=10, value=0, step=1)
 
-
+    crr = round((target-runs_left)/((120-balls_left)//6 + ((120-balls_left) % 6)/10), 2)
+    rrr = round((runs_left/((balls_left//6)+((balls_left % 6)/10))), 2)
+    input_df = pd.DataFrame({'batting_team': [selected_batting_team], 'bowling_team': [selected_bowling_team], 'venue': [selected_venue],
+                            'target': [target], 'runs_left': [runs_left], 'balls_left': [balls_left],
+                            'wickets_left': [wickets_left], 'current_run_rate': [crr], 'required_run_rate': [rrr]})
+    if st.button('Predict Win Probability'):
+        result = loaded_pipeline.predict_proba(input_df)[0]
+        formatted_text = f"**{round(result[0] * 100, 2)}%**"
+        st.markdown(f'**{selected_batting_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
+        formatted_text = f"**{round(result[1] * 100, 2)}%**"
+        st.markdown(f'**{selected_bowling_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
