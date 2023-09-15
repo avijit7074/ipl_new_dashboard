@@ -467,6 +467,6 @@ else:
     if st.button('Predict Win Probability'):
         result = loaded_pipeline.predict_proba(input_df)[0]
         formatted_text = f"**{round(result[0] * 100, 2)}%**"
-        st.markdown(f'**{selected_batting_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
-        formatted_text = f"**{round(result[1] * 100, 2)}%**"
         st.markdown(f'**{selected_bowling_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
+        formatted_text = f"**{round(result[1] * 100, 2)}%**"
+        st.markdown(f'**{selected_batting_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
