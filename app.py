@@ -365,7 +365,7 @@ df['runs_for_eco'] = df['runs_off_bat'] + df['new_extras']
 
 # Sidebar
 st.sidebar.title('Select One Option')
-select = st.sidebar.selectbox('Statistics & Insights/Win Prediction', ['Win Prediction', 'Statistics & Insights'])
+select = st.sidebar.selectbox('Statistics & Insights/Win Prediction', ['Statistics & Insights', 'Win Prediction'])
 if select == 'Statistics & Insights':
     option = st.sidebar.selectbox('Batsman/Bowler', ['Batsman', 'Bowler'])
 
@@ -453,11 +453,14 @@ else:
     with col2:
         target = st.number_input('Target', value=110)
         st.write(' ')
-        runs_left = st.number_input('Runs Left', min_value=1, max_value=300, value=50, step=1)
+        runs_left = target - st.number_input('Current Score', min_value=1, max_value=300, value=50, step=1)
+        st.write(runs_left)
     with col3:
-        balls_left = st.number_input('Balls Left', min_value=1, max_value=120, value=50, step=1)
+        over_completed = st.number_input('Overs Completed', min_value=1.0, max_value=120.0, value=50.0, step=0.1)
+        balls_left = 120 - (int(over_completed)*6 + round((over_completed - int(over_completed))*10,1))
         st.write(' ')
-        wickets_left = st.number_input('Wickets Left', min_value=0, max_value=10, value=0, step=1)
+        wickets_left = 10 - st.number_input('Wickets Out', min_value=0, max_value=10, value=0, step=1)
+        st.write(wickets_left)
 
     crr = round((target-runs_left)/((120-balls_left)//6 + ((120-balls_left) % 6)/10), 2)
     rrr = round((runs_left/((balls_left//6)+((balls_left % 6)/10))), 2)
@@ -466,7 +469,8 @@ else:
                             'wickets_left': [wickets_left], 'current_run_rate': [crr], 'required_run_rate': [rrr]})
     if st.button('Predict Win Probability'):
         result = loaded_pipeline.predict_proba(input_df)[0]
+        st.write(result)
         formatted_text = f"**{round(result[0] * 100, 2)}%**"
-        st.markdown(f'**{selected_bowling_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
-        formatted_text = f"**{round(result[1] * 100, 2)}%**"
         st.markdown(f'**{selected_batting_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
+        formatted_text = f"**{round(result[1] * 100, 2)}%**"
+        st.markdown(f'**{selected_bowling_team}**: <span style="color:green">{formatted_text}</span>', unsafe_allow_html=True)
