@@ -38,3 +38,19 @@ To explore the world of IPL and discover its fascinating insights, click on the 
 Feel free to share your findings and provide feedback. Your input is invaluable!
 
 So, what are you waiting for? Come on, let's dive into the world of IPL together!
+
+![Screenshot (292)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/bd84bc86-b404-44a1-9207-a52beed7a9f1)
+
+![Screenshot (293)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/bb2d1307-f4e6-4d37-bdc2-12a4757532e8)
+
+![Screenshot (294)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/ed602d28-cf48-43f7-8c24-ef6ba0c325e6)
+
+
+![Screenshot (295)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/97880a24-3ff8-4d61-b2da-29dbaba083b5)
+
+![Screenshot (296)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/7e91eecb-5786-4cbc-abc1-8935e91069b2)
+
+![Screenshot (297)](https://github.com/avijit7074/ipl_new_dashboard/assets/139502031/44fc3ae8-d33d-4253-b826-29f45a15d3a1)
+
+
+
